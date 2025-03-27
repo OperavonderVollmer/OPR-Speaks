@@ -2,12 +2,12 @@ import queue
 import sounddevice
 from OperaPowerRelay import opr
 import os
-import models
+import OPRSpeaksModels as models
 import traceback
 
 """
 
-    Ophelia Speaks
+    OPR-Speaks
 
     Mostly a staging module for the models, direct interaction is done by retrieving the model from the factory
 
@@ -21,17 +21,17 @@ def _select_speaker() -> tuple[int, str]:
     output_devices = [(d['index'], d['name']) for d in devices if d['max_output_channels'] > 0]
 
     if not output_devices:
-        opr.print_from("Ophelia Speaks - Select Speaker", "No output devices found.", 2)
+        opr.print_from("OPR-Speaks - Select Speaker", "No output devices found.", 2)
         return -1, "None"
 
     speaker_list = "\n" + "\n".join(f"{idx+1} -> {name}" for idx, (dev_id, name) in enumerate(output_devices))
 
     while True:
-        opr.print_from("Ophelia Speaks - Select Speaker", speaker_list, 2)
-        speaker_choice = opr.input_from("Ophelia Speaks - Select Speaker", "No selected speaker selected. Please select from the above")
+        opr.print_from("OPR-Speaks - Select Speaker", speaker_list, 2)
+        speaker_choice = opr.input_from("OPR-Speaks - Select Speaker", "No selected speaker selected. Please select from the above")
 
         if not speaker_choice.isdigit() or not 1 <= int(speaker_choice) <= len(output_devices):
-            opr.print_from("Ophelia Speaks - Select Speaker", "Invalid Input")
+            opr.print_from("OPR-Speaks - Select Speaker", "Invalid Input")
             continue
 
         selected_index,  selected_speaker = output_devices[int(speaker_choice) - 1]
@@ -51,8 +51,8 @@ def _prepare_speaker(config_file: dict, speaker_index: str = "", speaker_name: s
             selected_index, selected_speaker, = _select_speaker()
             config_file["selected_speaker"] = selected_index, selected_speaker
 
-    opr.save_json("Ophelia Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)), config_file, "config.json")
-    opr.print_from("Ophelia Speaks - Initialize", f"Selected Speaker: {selected_speaker}")
+    opr.save_json("OPR-Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)), config_file, "config.json")
+    opr.print_from("OPR-Speaks - Initialize", f"Selected Speaker: {selected_speaker}")
     
     global OUTPUT_DEVICE
     OUTPUT_DEVICE = selected_index, selected_speaker
@@ -60,7 +60,7 @@ def _prepare_speaker(config_file: dict, speaker_index: str = "", speaker_name: s
 def initialize(speaker_index: str = "", speaker_name: str = "") -> None:
     
     """
-    Initializes the Ophelia Speaks setup by loading configuration and 
+    Initializes the OPR-Speaks setup by loading configuration and 
     preparing the speaker.
 
     This function loads the configuration from a JSON file and sets up 
@@ -77,7 +77,7 @@ def initialize(speaker_index: str = "", speaker_name: str = "") -> None:
         used. Defaults to an empty string.
     """
 
-    config_file = opr.load_json("Ophelia Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)))
+    config_file = opr.load_json("OPR-Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)))
     _prepare_speaker(config_file, speaker_index, speaker_name)
 
 def get_TTS(model: str = "") -> models.TTS_Model:
@@ -96,13 +96,13 @@ initialize()
 
 
 if __name__ == "__main__":
-    opr.print_from("Ophelia Speaks - Main", "Starting Ophelia Speaks Demonstration...")
+    opr.print_from("OPR-Speaks - Main", "Starting OPR-Speaks Demonstration...")
 
     try:
         TTS: models.TTS_Model = get_TTS()
 
         while True:
-            decision = opr.input_from("Ophelia Speaks - Main", "Select an action:\n1. Start\n2. Configure Voice\nInput")
+            decision = opr.input_from("OPR-Speaks - Main", "Select an action:\n1. Start\n2. Configure Voice\nInput")
             if decision == "1":
                 break
             elif decision == "2":
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
         TTS.Start()
         while True:
-            decision = opr.input_from("Ophelia Speaks - Main", "Input (Say STOP_THIS to stop)")
+            decision = opr.input_from("OPR-Speaks - Main", "Input (Say STOP_THIS to stop)")
             if decision == "STOP_THIS":
                 TTS.Stop()
                 break
@@ -121,8 +121,8 @@ if __name__ == "__main__":
 
     except Exception:
         error_message = traceback.format_exc()
-        opr.print_from("Ophelia Speaks - Main", f"FAILED: Unexpected Error: {error_message}")
+        opr.print_from("OPR-Speaks - Main", f"FAILED: Unexpected Error: {error_message}")
 
     TTS.Stop()
 
-    opr.print_from("Ophelia Speaks - Main", "Stopping Ophelia Speaks...")
+    opr.print_from("OPR-Speaks - Main", "Stopping OPR-Speaks...")

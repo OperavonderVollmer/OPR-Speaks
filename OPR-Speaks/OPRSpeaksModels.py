@@ -140,14 +140,14 @@ class pyttsx3_TTS(TTS_Model):
 
         self._engine = pyttsx3.init('sapi5')
         self.voices = self._engine.getProperty('voices')
-        self._voice_index = voice_index
+        self._voice_index = voice_index or 1
         self._engine.setProperty('voice', self.voices[int(self._voice_index)].id)
         self._speech_queue = queue.Queue()
         self._speaker_index = int(speaker_index)
         self._running = False
         self._speaking_thread = None
 
-        opr.print_from("Ophelia Speaks Models - Initialize", "SUCCESS: PYTTX3 TTS Model initialized")
+        opr.print_from("OPR-Speaks-Models - Initialize", "SUCCESS: PYTTX3 TTS Model initialized")
 
     def Demo(self) -> None:
         voices = self._engine.getProperty('voices')
@@ -155,29 +155,29 @@ class pyttsx3_TTS(TTS_Model):
         msg = "This is a test message to demonstrate the sound of the voices"
 
         for voice in voices:
-            opr.print_from("Ophelia Speaks Models - Demo Voice", f"Name: {voice.name}")
+            opr.print_from("OPR-Speaks-Models - Demo Voice", f"Name: {voice.name}")
             self._engine.setProperty('voice', voice.id)
             self._engine.say(msg)
             self._engine.runAndWait()
             self._engine.stop()
         
 
-        _ = opr.input_from("Ophelia Speaks Models - Demo Voice", "Would you like to change the voice? (y/n)")
+        _ = opr.input_from("OPR-Speaks-Models - Demo Voice", "Would you like to change the voice? (y/n)")
 
         if _.lower() == "y":     
             while True:
                 try:
                     voice_list = "\n".join(f"{idx + 1} -> {voice.name}" for idx, voice in enumerate(voices))
-                    opr.print_from("Ophelia Speaks Models - Demo Voice", f"Available voices:\n{voice_list}")
+                    opr.print_from("OPR-Speaks-Models - Demo Voice", f"Available voices:\n{voice_list}")
 
 
-                    choice = opr.input_from("Ophelia Speaks Models - Demo Voice", "Please select a voice by entering its index")
+                    choice = opr.input_from("OPR-Speaks-Models - Demo Voice", "Please select a voice by entering its index")
 
                     if choice.isdigit() and (1 <= int(choice) <= len(voices)):
                         break
 
                 except ValueError:
-                    opr.print_from("Ophelia Speaks Models - Demo Voice", "Invalid input. Please enter a valid voice index.")
+                    opr.print_from("OPR-Speaks-Models - Demo Voice", "Invalid input. Please enter a valid voice index.")
             
             self._voice_index = int(choice) - 1
 
@@ -187,14 +187,14 @@ class pyttsx3_TTS(TTS_Model):
         self._engine.runAndWait()
         self._engine.stop()
 
-        opr.print_from("Ophelia Speaks Models - Demo Voice", "SUCCESS: Demo voice completed")
+        opr.print_from("OPR-Speaks-Models - Demo Voice", "SUCCESS: Demo voice completed")
 
 
 
     def _generate_from_text(self, text: str) -> tuple[bytes, int]:
 
         if not text.strip():
-            opr.print_from("Ophelia Speaks Models - Generate From Text", "FAILED: No text provided")
+            opr.print_from("OPR-Speaks-Models - Generate From Text", "FAILED: No text provided")
             return None, None
 
         fileName = None  # Ensure fileName exists before assignment
@@ -211,7 +211,7 @@ class pyttsx3_TTS(TTS_Model):
 
         except Exception:
             error_message = traceback.format_exc()
-            opr.print_from("Ophelia Speaks Models - Generate From Text", f"FAILED: Unexpected Error while generating audio: {error_message}")
+            opr.print_from("OPR-Speaks-Models - Generate From Text", f"FAILED: Unexpected Error while generating audio: {error_message}")
             return None, None
 
         finally:
@@ -219,7 +219,7 @@ class pyttsx3_TTS(TTS_Model):
                 try:
                     os.remove(fileName)
                 except Exception as e:
-                    opr.print_from("Ophelia Speaks Models - Generate From Text", f"WARNING: Failed to delete temp file {fileName}: {e}")
+                    opr.print_from("OPR-Speaks-Models - Generate From Text", f"WARNING: Failed to delete temp file {fileName}: {e}")
 
 
     def Say(self, text: str) -> bool:
@@ -243,7 +243,7 @@ class pyttsx3_TTS(TTS_Model):
             return True
         except Exception:
             error_message = traceback.format_exc()
-            opr.print_from("Ophelia Speaks Models - Speak", f"FAILED: Unexpected Error while speaking: {error_message}")
+            opr.print_from("OPR-Speaks-Models - Speak", f"FAILED: Unexpected Error while speaking: {error_message}")
             return False
 
     
@@ -256,7 +256,7 @@ class pyttsx3_TTS(TTS_Model):
 
                 audio_data, sample_rate = item
                 if self._speak(audio_data, sample_rate):
-                    opr.print_from("Ophelia Speaks Models - TTS Thread", "SUCCESS: Speaking")                
+                    opr.print_from("OPR-Speaks-Models - TTS Thread", "SUCCESS: Speaking")                
                 
                 self._speech_queue.task_done()
             except queue.Empty:
@@ -270,7 +270,7 @@ class pyttsx3_TTS(TTS_Model):
         self._running = True
         self._speaking_thread = threading.Thread(target=self._tts_thread, daemon=True)
         self._speaking_thread.start()
-        opr.print_from("Ophelia Speaks Models - Start", "SUCCESS: TTS Thread started")
+        opr.print_from("OPR-Speaks-Models - Start", "SUCCESS: TTS Thread started")
 
     def Stop(self) -> None:
         if not self._running:  
@@ -279,31 +279,31 @@ class pyttsx3_TTS(TTS_Model):
         self._running = False
         self._speech_queue.put(None)  
         self._speaking_thread.join()
-        opr.print_from("Ophelia Speaks Models - Stop", "SUCCESS: TTS Thread stopped")
+        opr.print_from("OPR-Speaks-Models - Stop", "SUCCESS: TTS Thread stopped")
 
 
 def TTS_Factory(speaker_index: str, model: str = "", voice_index: int = None) -> TTS_Model:
 
     if not model:
-        model = opr.input_from("Ophelia Speaks Models - Factory", "Select a model:\n1. PYTTX3 TTS\nInput")
+        model = opr.input_from("OPR-Speaks-Models - Factory", "Select a model:\n1. PYTTX3 TTS\nInput")
 
     match model:
         case "1": 
             return pyttsx3_TTS(speaker_index, voice_index)
         case _:
-            opr.print_from("Ophelia Speaks Models - Factory", "FAILED: Invalid model selected")
+            opr.print_from("OPR-Speaks-Models - Factory", "FAILED: Invalid model selected")
             return None
 
 
 if __name__ == "__main__":
     
-    opr.print_from("Ophelia Speaks Models - Main", "Running Ophelia Speaks Models...")
+    opr.print_from("OPR-Speaks-Models - Main", "Running OPR-Speaks-Models...")
     
     try:
         TTS = TTS_Factory(18)
 
         while True:
-            decision = opr.input_from("Ophelia Speaks Models - Main", "Select an action:\n1. Start\n2. Configure Voice\nInput")
+            decision = opr.input_from("OPR-Speaks-Models - Main", "Select an action:\n1. Start\n2. Configure Voice\nInput")
             if decision == "1":
                 break
             elif decision == "2":
@@ -311,7 +311,7 @@ if __name__ == "__main__":
 
         TTS.Start()
         while True:
-            decision = opr.input_from("Ophelia Speaks Models - Main", "Input (Say STOP_THIS to stop)")
+            decision = opr.input_from("OPR-Speaks-Models - Main", "Input (Say STOP_THIS to stop)")
             if decision == "STOP_THIS":
                 TTS.Stop()
                 break
@@ -322,8 +322,8 @@ if __name__ == "__main__":
 
     except Exception:
         error_message = traceback.format_exc()
-        opr.print_from("Ophelia Speaks Models - Main", f"FAILED: Unexpected Error: {error_message}")
+        opr.print_from("OPR-Speaks-Models - Main", f"FAILED: Unexpected Error: {error_message}")
 
     TTS.Stop()
 
-    opr.print_from("Ophelia Speaks Models - Main", "Stopping Ophelia Speaks Models...")
+    opr.print_from("OPR-Speaks-Models - Main", "Stopping OPR-Speaks-Models...")

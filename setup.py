@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="LogFileMonitor",
+    name="OPR-Speaks",
     version="1.0",
     packages=find_packages(),
     install_requires=[
@@ -14,6 +14,6 @@ setup(
     python_requires=">=3.7",
     author="Opera von der Vollmer",
     description="Monitor log files for changes",
-    url="https://github.com/OperavonderVollmer/LogFileMonitor", 
+    url="https://github.com/OperavonderVollmer/OPR-Speaks", 
     license="MIT",
 )
