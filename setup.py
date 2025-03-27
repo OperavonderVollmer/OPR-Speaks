@@ -8,7 +8,7 @@ setup(
         "pyttsx3",
         "sounddevice",
         "scipy",
-        "OperaPowerRelay @ git+https://github.com/OperavonderVollmer/OperaPowerRelay.git@v1.1.5"
+        "OperaPowerRelay @ git+https://github.com/OperavonderVollmer/OperaPowerRelay.git"
     ],
     python_requires=">=3.7",
     author="Opera von der Vollmer",
