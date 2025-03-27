@@ -51,10 +51,8 @@ TTS.Stop()
 
 ## Dependencies
 - `pyttsx3`
-- `numpy`
 - `sounddevice`
 - `scipy`
-- `wave`
 
 ## License
 This project is licensed under the MIT License.
