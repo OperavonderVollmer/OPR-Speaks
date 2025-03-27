@@ -1,5 +1,4 @@
 pyttsx3
-numpy
 sounddevice
 scipy
 git+https://github.com/OperavonderVollmer/OperaPowerRelay.git@v1.1.5

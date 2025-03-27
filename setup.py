@@ -1,12 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="OPR-Speaks",
+    name="OPRSpeaks",
     version="1.0",
     packages=find_packages(),
     install_requires=[
         "pyttsx3",
-        "numpy",
         "sounddevice",
         "scipy",
         "OperaPowerReplay @ git+https://github.com/OperavonderVollmer/OperaPowerRelay.git@v1.1.5"

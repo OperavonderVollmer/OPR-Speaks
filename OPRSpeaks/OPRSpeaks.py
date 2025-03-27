@@ -1,4 +1,3 @@
-import queue
 import sounddevice
 from OperaPowerRelay import opr
 import os

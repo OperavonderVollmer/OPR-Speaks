@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 import pyttsx3
 import tempfile
-import numpy
-import wave
 import queue
 import sounddevice
 from OperaPowerRelay import opr
