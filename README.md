@@ -34,7 +34,7 @@
 ### Installing via pip:
 
 ```sh
-pip install git+https://github.com/OperavonderVollmer/OPR-Speaks.git@latest
+pip install git+https://github.com/OperavonderVollmer/OPR-Speaks.git@main
 ```
 
 Ensure that all necessary dependencies are installed in your environment.
