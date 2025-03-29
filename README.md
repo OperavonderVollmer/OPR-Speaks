@@ -34,7 +34,7 @@
 ### Installing via pip:
 
 ```sh
-pip install git+https://github.com/YourUsername/OPR-Speaks.git@latest
+pip install git+https://github.com/OperavonderVollmer/OPR-Speaks.git@main
 ```
 
 Ensure that all necessary dependencies are installed in your environment.
@@ -51,10 +51,8 @@ TTS.Stop()
 
 ## Dependencies
 - `pyttsx3`
-- `numpy`
 - `sounddevice`
 - `scipy`
-- `wave`
 
 ## License
 This project is licensed under the MIT License.
