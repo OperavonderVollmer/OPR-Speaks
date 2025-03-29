@@ -11,7 +11,7 @@ from scipy.io import wavfile
 
 
 """
-    TTS Model to be used by OpheliaSpeaks
+    TTS Model to be used by OPR Speaks
 """
 
 class TTS_Model(ABC):
@@ -276,7 +276,6 @@ class pyttsx3_TTS(TTS_Model):
 
         self._running = False
         self._speech_queue.put(None)  
-        self._speaking_thread.join()
         opr.print_from("OPR-Speaks-Models - Stop", "SUCCESS: TTS Thread stopped")
 
 

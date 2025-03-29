@@ -1,7 +1,7 @@
 import sounddevice
 from OperaPowerRelay import opr
 import os
-import OPRSpeaksModels as models
+from OPRSpeaks import OPRSpeaksModels as models
 import traceback
 
 """
@@ -13,6 +13,8 @@ import traceback
 """
 
 OUTPUT_DEVICE = None
+TTS = None
+FILEPATH = ""
 
 def _select_speaker() -> tuple[int, str]:
     devices = sounddevice.query_devices()
@@ -50,13 +52,13 @@ def _prepare_speaker(config_file: dict, speaker_index: str = "", speaker_name: s
             selected_index, selected_speaker, = _select_speaker()
             config_file["selected_speaker"] = selected_index, selected_speaker
 
-    opr.save_json("OPR-Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)), config_file, "config.json")
+    opr.save_json("OPR-Speaks - Initialize", os.path.dirname(FILEPATH), config_file, "config_speaker.json")
     opr.print_from("OPR-Speaks - Initialize", f"Selected Speaker: {selected_speaker}")
     
     global OUTPUT_DEVICE
     OUTPUT_DEVICE = selected_index, selected_speaker
 
-def initialize(speaker_index: str = "", speaker_name: str = "") -> None:
+def initialize(speaker_index: str = "", speaker_name: str = "", filepath: str = "") -> None:
     
     """
     Initializes the OPR-Speaks setup by loading configuration and 
@@ -75,8 +77,18 @@ def initialize(speaker_index: str = "", speaker_name: str = "") -> None:
         speaker_name (str, optional): The name of the speaker to be 
         used. Defaults to an empty string.
     """
+    opr.print_from("OPR-Speaks - Main", "Starting OPR-Speaks Demonstration...")
 
-    config_file = opr.load_json("OPR-Speaks - Initialize", os.path.dirname(os.path.abspath(__file__)))
+    global FILEPATH
+    if not filepath:
+        filepath = os.path.abspath(__file__)
+
+    FILEPATH = filepath
+
+
+    opr.print_from("OPR-Speaks - Initialize", f"Config File: {FILEPATH}")
+
+    config_file = opr.load_json("OPR-Speaks - Initialize", os.path.dirname(FILEPATH), filename="config_speaker.json")
     _prepare_speaker(config_file, speaker_index, speaker_name)
 
 def get_TTS(model: str = "") -> models.TTS_Model:
@@ -89,16 +101,24 @@ def get_TTS(model: str = "") -> models.TTS_Model:
     Returns:
         models.TTS_Model: The retrieved TTS Model
     """
+    
     return models.TTS_Factory(OUTPUT_DEVICE[0], model)
 
-initialize()
+def deinitialize() -> None:
+    global TTS
+
+    TTS.Stop()
+    opr.print_from("OPR-Speaks - Main", "Stopping OPR-Speaks...")
 
 
 if __name__ == "__main__":
-    opr.print_from("OPR-Speaks - Main", "Starting OPR-Speaks Demonstration...")
+    
+    initialize()
+
 
     try:
-        TTS: models.TTS_Model = get_TTS()
+        
+        TTS = get_TTS()
 
         while True:
             decision = opr.input_from("OPR-Speaks - Main", "Select an action:\n1. Start\n2. Configure Voice\nInput")
@@ -122,6 +142,4 @@ if __name__ == "__main__":
         error_message = traceback.format_exc()
         opr.print_from("OPR-Speaks - Main", f"FAILED: Unexpected Error: {error_message}")
 
-    TTS.Stop()
-
-    opr.print_from("OPR-Speaks - Main", "Stopping OPR-Speaks...")
+    deinitialize()
