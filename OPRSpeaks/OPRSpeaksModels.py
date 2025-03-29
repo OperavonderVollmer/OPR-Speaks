@@ -11,7 +11,7 @@ from scipy.io import wavfile
 
 
 """
-    TTS Model to be used by OPR Speaks
+    TTS Model to be used by OpheliaSpeaks
 """
 
 class TTS_Model(ABC):
